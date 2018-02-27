@@ -53,7 +53,6 @@ def k_averageTweetLengthWords(rdd):
 def writeToTSV(filename, rdd):
         writer = tsv.TsvWriter(open(filename, "w"))
         writer.comment("TSV task 1")
-        writer.comment("Hello")
         writer.line(a_count(rdd))
         #writer.line(b_distinctUsers(rdd))
         #writer.line(c_distinctCountries(rdd))
