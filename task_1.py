@@ -22,64 +22,103 @@ def createRDD(filename, val):
 def a_count(rdd):
     return rdd.count()
 
-#Finds number of distinct users
+#Counts distinct users
 def b_distinctUsers(rdd):
-    un = rdd.map(lambda x: x[7]).distinct().collect()
-    print(un[0:10])
-    #un = rdd.map(lambda x: x[7]).reduce(count)
-    #un2 = un.reduce(count())
-    return len(un)
+    usernames = rdd.map(lambda x: x[7]).distinct().collect()
+    return len(usernames)
 
+#Counts distinct countries
 def c_distinctCountries(rdd):
-    print()
+    countries = rdd.map(lambda x: x[1]).distinct().collect()
+    return len(countries)
 
+#Counts distinct places
 def d_distinctPlaces(rdd):
-    print()
+    places = rdd.map(lambda x: x[4]).distinct().collect()
+    return len(places)
 
+#Counts distinct languages
 def e_distinctLanguages(rdd):
-    print()
+    languages = rdd.map(lambda x: x[5]).distinct().collect()
+    return len(languages)
 
+#Maa sjekke her om vi skal ha naermest 0 eller mest negativt
 def f_minLatitude(rdd):
-    print()
+    latitude = rdd.map(lambda x: x[11]).min()
+    return latitude
 
 def g_minLongitude(rdd):
-    print()
+    longitude = rdd.map(lambda x: x[12]).min()
+    return longitude
 
 def h_maxLatitude(rdd):
-    print()
+    latitude = rdd.map(lambda x: x[11]).max()
+    return latitude
 
 def i_maxLongitude(rdd):
-    print()
+    longitude = rdd.map(lambda x: x[12]).max()
+    return longitude
+
 
 def j_averageTweetLengthChar(rdd):
-    print()
+    average = rdd.map(lambda x: len(x[10])).mean()
+    return average
 
 def k_averageTweetLengthWords(rdd):
-    print()
+    average = rdd.map(lambda x: len(x[10].split(" "))).mean()
+    return average
 
-def writeToTSV(filename, rdd):
+def saveAsTextFile(filename, rdd):
         writer = tsv.TsvWriter(open(filename, "w"))
-        #writer.comment("TSV task 1")
+
         #Task 1a
-        #count_tweets = a_count(rdd)
-        #writer.line(count_tweets)
+        #countTweets = a_count(rdd)
+        #writer.line(countTweets)
 
         #Task 1b
-        count_username = b_distinctUsers(rdd)
-        writer.line(count_username)
-        #writer.line(c_distinctCountries(rdd))
-        #writer.line(d_distinctPlaces(rdd))
-        #writer.line(e_distinctLanguages(rdd))
-        #writer.line(f_minLatitude(rdd))
-        #writer.line(g_minLongitude(rdd))
-        #writer.line(h_maxLatitude(rdd))
-        #writer.line(i_maxLongitude(rdd))
-        #writer.line(j_averageTweetLengthChar(rdd))
-        #writer.line(k_averageTweetLengthWords(rdd))
+        #countUsername = b_distinctUsers(rdd)
+        #writer.line(countUsername)
+
+        #Task 1c
+        #countCountries = c_distinctCountries(rdd)
+        #writer.line(countCountries)
+
+        #Task 1d
+        #countPlaces = d_distinctPlaces(rdd)
+        #writer.line(countPlaces)
+
+        #Task 1e
+        #countLanguages = e_distinctLanguages(rdd)
+        #writer.line(countLanguages)
+
+        #Task 1f
+        #minLatitude = f_minLatitude(rdd)
+        #writer.line(minLatitude)
+
+        #Task 1g
+        #minLongitude = g_minLongitude(rdd)
+        #writer.line(minLongitude)
+
+        #Task 1h
+        #maxLatitude = h_maxLatitude(rdd)
+        #writer.line(maxLatitude)
+
+        #Task 1i
+        #maxLongitude = i_maxLongitude(rdd)
+        #writer.line(maxLongitude)
+
+        #Task 1j
+        #averageTweet = j_averageTweetLengthChar(rdd)
+        #writer.line(averageTweet)
+
+        #Task 1k
+        #averageWords = k_averageTweetLengthWords(rdd)
+        #writer.line(averageWords)
+
         writer.close()
 
 def mainTask1():
     rdd = createRDD("/Users/vilde/BigData/data/geotweets.tsv", 0.1)
-    writeToTSV("/Users/vilde/BigData/result_1.tsv", rdd)
+    saveAsTextFile("/Users/vilde/BigData/result_1.tsv", rdd)
 
 mainTask1()

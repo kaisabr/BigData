@@ -1,16 +1,29 @@
 from pyspark import SparkContext, SparkConf
+import tsv
 
+
+rdd = None
+rdd_sample = None
 conf = SparkConf()
 #conf.setMaster("local")
 #conf.setAppName("My application")
 #conf.set("spark.executor.memory", "1g")
 sc = SparkContext(conf = conf)
 
-data_file = "/Users/vilde/BigData/data/geotweets.tsv"
-rdd = sc.textFile(data_file)
+#Initializes RDD
+def createRDD(filename, val):
+    rdd = sc.textFile(filename).map(lambda line: line.split('\t'))
+    rdd_sample = rdd.sample(False, val, 5)
+    return rdd_sample
 
-rdd_sample = rdd.sample(False, 0.1, 5)
 
-count = rdd_sample.count()
 
-print("HELOOOOOO", count)
+def saveAsTextFile(filename, rdd):
+        writer = tsv.TsvWriter(open(filename, "w"))
+        writer.close()
+
+def mainTask2():
+    rdd = createRDD("/Users/vilde/BigData/data/geotweets.tsv", 0.1)
+    saveAsTextFile("/Users/vilde/BigData/result_2.tsv", rdd)
+
+mainTask2()
