@@ -25,8 +25,6 @@ def a_count(rdd):
 #Counts distinct users
 def b_distinctUsers(rdd):
     usernames = rdd.map(lambda x: x[7]).distinct().collect()
-    #un = rdd.map(lambda x: x[7]).reduce(count)
-    #un2 = un.reduce(count())
     return len(usernames)
 
 #Counts distinct countries
@@ -44,29 +42,31 @@ def e_distinctLanguages(rdd):
     languages = rdd.map(lambda x: x[5]).distinct().collect()
     return len(languages)
 
-#Må sjekke her om vi skal ha nærmest 0 eller mest negativt
+#Maa sjekke her om vi skal ha naermest 0 eller mest negativt
 def f_minLatitude(rdd):
-    latitude = rdd.map(lambda x: x[11]).distinct().collect()
-    return min(latitude)
+    latitude = rdd.map(lambda x: x[11]).min()
+    return latitude
 
 def g_minLongitude(rdd):
-    longitude = rdd.map(lambda x: x[12]).distinct().collect()
-    return min(longitude)
+    longitude = rdd.map(lambda x: x[12]).min()
+    return longitude
 
 def h_maxLatitude(rdd):
-    latitude = rdd.map(lambda x: x[11]).distinct().collect()
-    return max(latitude)
+    latitude = rdd.map(lambda x: x[11]).max()
+    return latitude
 
 def i_maxLongitude(rdd):
-    longitude = rdd.map(lambda x: x[12]).distinct().collect()
-    return max(longitude)
+    longitude = rdd.map(lambda x: x[12]).max()
+    return longitude
 
 
 def j_averageTweetLengthChar(rdd):
-    print()
+    average = rdd.map(lambda x: len(x[10])).mean()
+    return average
 
 def k_averageTweetLengthWords(rdd):
-    print()
+    average = rdd.map(lambda x: len(x[10].split(" "))).mean()
+    return average
 
 def saveAsTextFile(filename, rdd):
         writer = tsv.TsvWriter(open(filename, "w"))
@@ -92,25 +92,28 @@ def saveAsTextFile(filename, rdd):
         #writer.line(countLanguages)
 
         #Task 1f
-        minLatitude = f_minLatitude(rdd)
-        writer.line(minLatitude)
+        #minLatitude = f_minLatitude(rdd)
+        #writer.line(minLatitude)
 
         #Task 1g
         #minLongitude = g_minLongitude(rdd)
         #writer.line(minLongitude)
 
         #Task 1h
-
-        #writer.line(h_maxLatitude(rdd))
+        #maxLatitude = h_maxLatitude(rdd)
+        #writer.line(maxLatitude)
 
         #Task 1i
-        #writer.line(i_maxLongitude(rdd))
+        #maxLongitude = i_maxLongitude(rdd)
+        #writer.line(maxLongitude)
 
         #Task 1j
-        #writer.line(j_averageTweetLengthChar(rdd))
+        #averageTweet = j_averageTweetLengthChar(rdd)
+        #writer.line(averageTweet)
 
         #Task 1k
-        #writer.line(k_averageTweetLengthWords(rdd))
+        #averageWords = k_averageTweetLengthWords(rdd)
+        #writer.line(averageWords)
 
         writer.close()
 
