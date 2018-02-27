@@ -1,5 +1,8 @@
+from __future__ import print_function
 from pyspark import SparkContext, SparkConf
 import tsv
+from operator import add
+
 
 rdd = None
 rdd_sample = None
@@ -11,7 +14,7 @@ sc = SparkContext(conf = conf)
 
 #Initializes RDD
 def createRDD(filename, val):
-    rdd = sc.textFile(filename)
+    rdd = sc.textFile(filename).map(lambda line: line.split('\t'))
     rdd_sample = rdd.sample(False, val, 5)
     return rdd_sample
 
@@ -21,7 +24,11 @@ def a_count(rdd):
 
 #Finds number of distinct users
 def b_distinctUsers(rdd):
-    print()
+    un = rdd.map(lambda x: x[7]).distinct().collect()
+    print(un[0:10])
+    #un = rdd.map(lambda x: x[7]).reduce(count)
+    #un2 = un.reduce(count())
+    return len(un)
 
 def c_distinctCountries(rdd):
     print()
@@ -52,9 +59,14 @@ def k_averageTweetLengthWords(rdd):
 
 def writeToTSV(filename, rdd):
         writer = tsv.TsvWriter(open(filename, "w"))
-        writer.comment("TSV task 1")
-        writer.line(a_count(rdd))
-        #writer.line(b_distinctUsers(rdd))
+        #writer.comment("TSV task 1")
+        #Task 1a
+        #count_tweets = a_count(rdd)
+        #writer.line(count_tweets)
+
+        #Task 1b
+        count_username = b_distinctUsers(rdd)
+        writer.line(count_username)
         #writer.line(c_distinctCountries(rdd))
         #writer.line(d_distinctPlaces(rdd))
         #writer.line(e_distinctLanguages(rdd))
@@ -68,6 +80,6 @@ def writeToTSV(filename, rdd):
 
 def mainTask1():
     rdd = createRDD("/Users/vilde/BigData/data/geotweets.tsv", 0.1)
-    writeToTSV("/Users/vilde/BigData/task_1.tsv", rdd)
+    writeToTSV("/Users/vilde/BigData/result_1.tsv", rdd)
 
 mainTask1()
