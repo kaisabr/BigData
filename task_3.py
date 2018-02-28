@@ -24,23 +24,27 @@ def countTweets(rdd):
     #print("Less than 10: ", countries)
     return countries10
 
-def filterRDD(rdd):
-    countries = countTweets(rdd)
-    rdd2 = rdd.filter(lambda x: x[1] in countries).
-    #print("Count: ", rdd2.count())
-    return rdd2
+def filterRDD(rdd, countries):
+    rdd10 = rdd.filter(lambda x: x[1] in countries)
+    return rdd10
 
+def calculateCentroid(rdd, country):
+    latitude = rdd.filter(lambda y: y[1]==country).map(lambda x: x[11]).mean()
+    longitude = rdd.filter(lambda y: y[1]==country).map(lambda x: x[12]).mean()
+    return latitude, longitude
 
 def saveAsTextFile(filename, rdd):
         writer = tsv.TsvWriter(open(filename, "w"))
-        #Må skrives ferdig for å skrive land, latitude, longitude
-        for element in rdd:
-            writer.line()
+        countries = countTweets(rdd)
+        rddFiltered = filterRDD(rdd, countries)
+        #Maa skrives ferdig for aa skrive land, latitude, longitude
+        for country in countries:
+            latitude, longitude = calculateCentroid(rddFiltered, country)
+            writer.line(country+"\t"+latitude+"\t"+longitude)
         writer.close()
 
 def mainTask3():
     rdd = createRDD("/Users/vilde/BigData/data/geotweets.tsv", 0.1)
-    filterRDD(rdd)
     saveAsTextFile("/Users/vilde/BigData/result_3.tsv", rdd)
 
 mainTask3()

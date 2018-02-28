@@ -44,19 +44,19 @@ def e_distinctLanguages(rdd):
 
 #Maa sjekke her om vi skal ha naermest 0 eller mest negativt
 def f_minLatitude(rdd):
-    latitude = rdd.map(lambda x: x[11]).min()
+    latitude = rdd.map(lambda x: float(x[11])).min()
     return latitude
 
 def g_minLongitude(rdd):
-    longitude = rdd.map(lambda x: x[12]).min()
+    longitude = rdd.map(lambda x: float(x[12])).min()
     return longitude
 
 def h_maxLatitude(rdd):
-    latitude = rdd.map(lambda x: x[11]).max()
+    latitude = rdd.map(lambda x: float(x[11])).max()
     return latitude
 
 def i_maxLongitude(rdd):
-    longitude = rdd.map(lambda x: x[12]).max()
+    longitude = rdd.map(lambda x: float(x[12])).max()
     return longitude
 
 
@@ -92,12 +92,12 @@ def saveAsTextFile(filename, rdd):
         #writer.line(countLanguages)
 
         #Task 1f
-        #minLatitude = f_minLatitude(rdd)
-        #writer.line(minLatitude)
+        minLatitude = f_minLatitude(rdd)
+        writer.line(minLatitude)
 
         #Task 1g
-        #minLongitude = g_minLongitude(rdd)
-        #writer.line(minLongitude)
+        minLongitude = g_minLongitude(rdd)
+        writer.line(minLongitude)
 
         #Task 1h
         #maxLatitude = h_maxLatitude(rdd)
