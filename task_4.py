@@ -23,7 +23,7 @@ def createRDD(filename, val):
     rdd_sample = rdd.sample(False, val, 5)
     return rdd_sample
 
-#create DF
+##create data frame df from rdd, change name of columns
 def createDF(rdd):
     df = spark.createDataFrame(rdd, ("utc_time", "country_name", "country_code", \
                                      "place_type", "place_name", "language", \
@@ -31,12 +31,9 @@ def createDF(rdd):
                                      "number_of_friends", "tweet_text", "latitude", "longitude"))
     return df
 
-#create data frame df from rdd, change name of columns
-
 #task 4a: Count the number of tweets:
 def a_count(df):
     return df.count()
-#df2 = spark.sql("SELECT field1 AS f1, field2 as f2 from table1")
 
 #task 4b: Number of distinct users (username):
 def b_distinctUsers(df):
@@ -57,27 +54,49 @@ def e_distinctLanguages(df):
     distLanguages = df.select("languages").distinct().count()
     return distLanguages
 
-#task 4f:
+#task 4f: Minimum value of latitude:
+def f_minLatitude(df):
+    minLat = df.select("latitude").min()
+    return minLat
 
-#task 4g
+#task 4f: Minimum value of longtitude:
+def f_minLongitude(df):
+    minLong = df.select("longitude").min()
+    return minLong
+
+#task 4g: Maximum value of latitude:
+def g_maxLatitude(df):
+    maxLat = df.agg({"latitude": "max"}).collect()[0]
+    #maxLat = df.select("latitude").rdd.max()
+    return maxLat
+
+#task 4g: Maxmumim value of longitude:
+#  def g_maxLongitude(df):
+    # df.registerTempTable("df_table")
+# df.groupby().max("longitude").collect()[0].asDict()['max(longitude)']    #maxLong = df.select(max("longitude"))
+    #pyspark.sql.utils.AnalysisException: u'"longitude" is not a numeric column. Aggregation function can only be applied on a numeric column.
+    #return maxLong
 
 
-def saveAsTextFile(filename, rdd, df):
-        writer = tsv.TsvWriter(open(filename, "w"))
-        #write 4c to result_4.tsv
+#def saveAsTextFile(filename, rdd, df):
+#        writer = tsv.TsvWriter(open(filename, "w"))
+#        #write 4c to result_4.tsv
         #writer.line(c_distinctCountries(df))
-        writer.close()
+#        writer.close()
 
 def mainTask4():
     rdd = createRDD("/Users/kaisarokne/git/BigData/geotweets.tsv", 0.1)
     df = createDF(rdd)
-
+    print("HEEEEI, ", g_maxLongitude(df))
+    #a_count(df)
+    #b_distinctUsers(df)
+    #g_maxLatitude(df)
     #print("number of tweets: ", a_count(df))
     #print("distinct number of users: ", b_distinctUsers(df))
     #print(c_distinctCountries(df))
-    print(d_distinctPlaces(df))
+    #print(d_distinctPlaces(df))
     #c_distinctCountries(df)
-    saveAsTextFile("/Users/kaisarokne/git/BigData/result_4.tsv", rdd, df)
+    #saveAsTextFile("/Users/kaisarokne/git/BigData/result_4.tsv", rdd, df)
 
 
 mainTask4()
