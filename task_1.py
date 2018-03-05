@@ -65,7 +65,7 @@ def j_averageTweetLengthChar(rdd):
     return average
 
 def k_averageTweetLengthWords(rdd):
-    average = rdd.map(lambda x: len(x[10].split(" "))).mean()
+    average = rdd.map(lambda x: len(x[10].split(" ").lower())).mean()
     return average
 
 def saveAsTextFile(filename, rdd):

@@ -4,10 +4,8 @@ import tsv
 
 rdd = None
 rdd_sample = None
+
 conf = SparkConf()
-#conf.setMaster("local")
-#conf.setAppName("My application")
-#conf.set("spark.executor.memory", "1g")
 sc = SparkContext(conf = conf)
 
 #Initializes RDD
@@ -18,10 +16,7 @@ def createRDD(filename, val):
 
 def countTweets(rdd):
     countries = rdd.map(lambda x: x[1]).countByValue().items()#filter(lambda (value,count): count>= 10))
-    #print(countries)
     countries10 = map(lambda x: x[0],list(filter(lambda (v,c): c >= 10, countries)))
-    #print("More than 10: ", countries10)
-    #print("Less than 10: ", countries)
     return countries10
 
 def filterRDD(rdd, countries):
