@@ -68,6 +68,38 @@ def k_averageTweetLengthWords(rdd):
     average = rdd.map(lambda x: len(x[10].split(" ").lower())).mean()
     return average
 
+
+def run(filename, rdd):
+    #Task 1a
+    countTweets = a_count(rdd)
+    #Task 1b
+    countUsername = b_distinctUsers(rdd)
+    #Task 1c
+    countCountries = c_distinctCountries(rdd)
+    #Task 1d
+    #countPlaces = d_distinctPlaces(rdd)
+    #Task 1e
+    #countLanguages = e_distinctLanguages(rdd)
+    #Task 1f
+    #minLatitude = f_minLatitude(rdd)
+    #Task 1g
+    #minLongitude = g_minLongitude(rdd)
+    #Task 1h
+    #maxLatitude = h_maxLatitude(rdd)
+    #Task 1i
+    #maxLongitude = i_maxLongitude(rdd)
+    #Task 1j
+    #averageTweet = j_averageTweetLengthChar(rdd)
+    #Task 1k
+    #averageWords = k_averageTweetLengthWords(rdd)
+
+    results = sc.parallelize([countTweets, countUsername, countCountries])#,
+    #countPlaces, countLanguages, minLatitude, minLongitude, maxLatitude, maxLongitude,
+    #averageTweet, averageWords])
+
+    results.coalesce(1).saveAsTextFile(filename)
+
+
 def saveAsTextFile(filename, rdd):
         writer = tsv.TsvWriter(open(filename, "w"))
 
@@ -119,6 +151,7 @@ def saveAsTextFile(filename, rdd):
 
 def mainTask1():
     rdd = createRDD("/Users/vilde/BigData/data/geotweets.tsv", 0.1)
-    saveAsTextFile("/Users/vilde/BigData/result_1.tsv", rdd)
+    #saveAsTextFile("/Users/vilde/BigData/result_1.tsv", rdd)
+    run("/Users/vilde/BigData/result_test.tsv", rdd)
 
 mainTask1()
