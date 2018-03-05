@@ -18,7 +18,6 @@ def createRDD(filename, val):
 def frequentWords(rdd):
     rddFiltered = rdd.filter(lambda x: x[2] == 'US')
     rddMapped = rddFiltered.map(lambda x: x[10].lower().split(" "))
-    print("----------------------------")
     return rddMapped
 
 
@@ -28,8 +27,7 @@ def saveAsTextFile(filename, rdd):
 
 def mainTask6():
     rdd = createRDD("/Users/vilde/BigData/data/geotweets.tsv", 0.1)
-    frequentWords(rdd)
-    print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+    freqWords = frequentWords(rdd)
     #saveAsTextFile("/Users/vilde/BigData/result_6.tsv", rdd)
 
 mainTask6()
