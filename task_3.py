@@ -8,7 +8,8 @@ rdd_sample = None
 conf = SparkConf()
 sc = SparkContext(conf = conf)
 
-#Initializes RDD
+# Initializes RDD - splits on tab.
+# Val is the percentage to read from file. Default to 0.1.
 def createRDD(filename, val):
     rdd = sc.textFile(filename).map(lambda line: line.split('\t'))
     rdd_sample = rdd.sample(False, val, 5)
