@@ -4,18 +4,22 @@ import tsv
 
 rdd = None
 rdd_sample = None
+
 conf = SparkConf()
-#conf.setMaster("local")
-#conf.setAppName("My application")
-#conf.set("spark.executor.memory", "1g")
 sc = SparkContext(conf = conf)
 
-#Initializes RDD
+# Initializes RDD - splits on tab.
+# Val is the percentage to read from file. Default to 0.1.
 def createRDD(filename, val):
     rdd = sc.textFile(filename).map(lambda line: line.split('\t'))
     rdd_sample = rdd.sample(False, val, 5)
     return rdd_sample
 
+def frequentWords(rdd):
+    rddFiltered = rdd.filter(lambda x: x[2] == 'US')
+    rddMapped = rddFiltered.map(lambda x: x[10].lower().split(" "))
+    print("----------------------------")
+    return rddMapped
 
 
 def saveAsTextFile(filename, rdd):
@@ -24,6 +28,8 @@ def saveAsTextFile(filename, rdd):
 
 def mainTask6():
     rdd = createRDD("/Users/vilde/BigData/data/geotweets.tsv", 0.1)
-    saveAsTextFile("/Users/vilde/BigData/result_6.tsv", rdd)
+    frequentWords(rdd)
+    print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+    #saveAsTextFile("/Users/vilde/BigData/result_6.tsv", rdd)
 
 mainTask6()
