@@ -1,15 +1,13 @@
-from __future__ import print_function
 from pyspark import SparkContext, SparkConf
-import tsv
-from operator import add
 
-
-rdd = None
-rdd_sample = None
-conf = SparkConf()
 #conf.setMaster("local")
 #conf.setAppName("My application")
 #conf.set("spark.executor.memory", "1g")
+
+rdd = None
+rdd_sample = None
+
+conf = SparkConf()
 sc = SparkContext(conf = conf)
 
 #Initializes RDD
@@ -69,34 +67,32 @@ def j_averageTweetLengthChar(rdd):
 
 #Finds average tweet length in words
 def k_averageTweetLengthWords(rdd):
-    average = rdd.map(lambda x: len(x[10].split(" ").lower())).mean()
+    average = rdd.map(lambda x: len(x[10].split(" "))).mean()
     return average
 
-
+#Runs all parts of the task and saves as tsv file
 def run(filename, rdd):
-    #countTweets = a_count(rdd)
-    #countUsername = b_distinctUsers(rdd)
-    #countCountries = c_distinctCountries(rdd)
-    #countPlaces = d_distinctPlaces(rdd)
-    #countLanguages = e_distinctLanguages(rdd)
-    #minLatitude = f_minLatitude(rdd)
-    #minLongitude = g_minLongitude(rdd)
-    #maxLatitude = h_maxLatitude(rdd)
-    #maxLongitude = i_maxLongitude(rdd)
-    #averageTweet = j_averageTweetLengthChar(rdd)
-    #averageWords = k_averageTweetLengthWords(rdd)
+    countTweets = a_count(rdd)
+    countUsername = b_distinctUsers(rdd)
+    countCountries = c_distinctCountries(rdd)
+    countPlaces = d_distinctPlaces(rdd)
+    countLanguages = e_distinctLanguages(rdd)
+    minLatitude = f_minLatitude(rdd)
+    minLongitude = g_minLongitude(rdd)
+    maxLatitude = h_maxLatitude(rdd)
+    maxLongitude = i_maxLongitude(rdd)
+    averageTweet = j_averageTweetLengthChar(rdd)
+    averageWords = k_averageTweetLengthWords(rdd)
 
-    results = sc.parallelize([countUsername])#,
-    #countTweets, countUsername, countCountries, countPlaces, countLanguages, minLatitude
-    #minLongitude, maxLatitude, maxLongitude,
-    #averageTweet, averageWords])
+    results = sc.parallelize([countTweets, countUsername, countCountries, countPlaces\
+    ,countLanguages, minLatitude, minLongitude, maxLatitude, maxLongitude\
+    ,averageTweet, averageWords])
 
     results.coalesce(1).saveAsTextFile(filename)
 
 
-def mainTask1():
-    rdd = createRDD("/Users/vilde/BigData/data/geotweets.tsv", 0.1)
-    #saveAsTextFile("/Users/vilde/BigData/result_1.tsv", rdd)
+def main():
+    rdd = createRDD("./data/geotweets.tsv", 0.1)
     run("./result_1.tsv", rdd)
 
-mainTask1()
+main()
