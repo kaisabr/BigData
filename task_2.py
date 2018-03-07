@@ -1,7 +1,7 @@
 from pyspark import SparkContext, SparkConf
 import tsv
 
-
+#Initializes SparkContext and SparkConf
 rdd = None
 rdd_sample = None
 
@@ -22,16 +22,15 @@ def sortCount(rdd):
     rddSorted = sorted(rddCount, key = lambda x: (x[1]*(-1), x[0]))
     return rddSorted
 
-# Function that saves to tsv file
-def saveAsTextFile(filename, rdd):
-    writer = tsv.TsvWriter(open(filename, "w"))
-    for country, count in rdd:
-        writer.line(country + "\t" + str(count))
-    writer.close()
+#Sorting the list and creating RDD before writing to file formated as tsv
+def run(rdd):
+    listSorted = sortCount(rdd)
+    rddSorted = sc.parallelize(listSorted).map(lambda (x,y): str(x) + "\t" + str(y))
+    return rddSorted
 
-def mainTask2():
-    rdd = createRDD("/Users/vilde/BigData/data/geotweets.tsv", 0.1)
-    rddSorted = sortCount(rdd)
-    saveAsTextFile("/Users/vilde/BigData/result_2.tsv", rddSorted)
+#Creates rdd before writing to file
+def main():
+    rdd = run(createRDD("./data/geotweets.tsv", 0.1))
+    rdd.coalesce(1).saveAsTextFile("./result_2.tsv")
 
-mainTask2()
+main()

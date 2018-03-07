@@ -15,38 +15,39 @@ def createRDD(filename, val):
     rdd_sample = rdd.sample(False, val, 5)
     return rdd_sample
 
-def countTweets(rdd):
-    countries = rdd.map(lambda x: x[1]).countByValue().items()#filter(lambda (value,count): count>= 10))
-    countries10 = map(lambda x: x[0],list(filter(lambda (v,c): c >= 10, countries)))
-    return countries10
+# Counts tweets per country by countryname as key
+def countTweetsCountry(rdd):
+    countries = rdd.map(lambda x: (x[1], 1)).reduceByKey(lambda x,y: x+y)\
+    .filter(lambda x: int(x[1])>=10)\
+    .map(lambda x: x[0]).collect()
+    return countries
 
+# Filters rdd so that it removes all countries with less than 10 tweets
 def filterRDD(rdd, countries):
-    rdd10 = rdd.filter(lambda x: x[1] in countries)
-    return rdd10
+    rddFiltered = rdd.filter(lambda x: x[1] in countries)
+    return rddFiltered
 
-def calculateCentroid(rdd, country):
-    latitude = rdd.filter(lambda y: y[1]==country).map(lambda x: float(x[11])).mean()
-    longitude = rdd.filter(lambda y: y[1]==country).map(lambda x: float(x[12])).mean()
-    return latitude, longitude
+# Calculates centroid with average latitude and longitude
+def calculateCentroid(rdd):
+    latCount = (0,0)
+    latitude = rdd.map(lambda x: (x[1], float(x[11])))\
+        .aggregateByKey(latCount, lambda x,y: (x[0] + y, x[1] + 1), lambda x,y: (x[0] + y[0], x[1] + y[1]))\
+        .mapValues(lambda a: a[0]/a[1])
 
-def saveFile(filename, rdd):
-        #writer = tsv.TsvWriter(open(filename, "w"))
-        countries = countTweets(rdd)
-        rddFiltered = filterRDD(rdd, countries)
-        #Maa skrives ferdig for aa skrive land, latitude, longitude
-        result = []
+    longCount = (0,0)
+    longitude = rdd.map(lambda x: (x[1], float(x[12])))\
+        .aggregateByKey(longCount, lambda x,y: (x[0] + y, x[1] + 1), lambda x,y: (x[0] + y[0], x[1] + y[1]))\
+        .mapValues(lambda a: a[0]/a[1])
 
-        for country in countries:
-            latitude, longitude = calculateCentroid(rddFiltered, country)
-            result.append((country+"\t"+str(latitude)+"\t"+str(longitude)))
-        #    writer.line(country+"\t"+str(latitude)+"\t"+str(longitude))
-        #writer.close()
+    return latitude.join(longitude).map(lambda x: str(x[0]) + "\t" + str(x[1][0]) + "\t" + str(x[1][1]))
 
-        resultRdd = result.parallelize(result)
-        resultRdd.coalesce(1).saveAsTextFile(filename)
 
-def mainTask3():
-    rdd = createRDD("/Users/vilde/BigData/data/geotweets.tsv", 0.001)
-    saveFile("/Users/vilde/BigData/result_3", rdd)
+def main():
+    rdd = createRDD("./data/geotweets.tsv", 0.1)
+    countries = countTweetsCountry(rdd)
+    rddFiltered = filterRDD(rdd, countries)
+    rddWrite = calculateCentroid(rddFiltered)
+    rddWrite.coalesce(1).saveAsTextFile("./result_3.tsv")
 
-mainTask3()
+
+main()
