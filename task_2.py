@@ -30,8 +30,10 @@ def saveAsTextFile(filename, rdd):
     writer.close()
 
 def mainTask2():
-    rdd = createRDD("/Users/vilde/BigData/data/geotweets.tsv", 0.1)
-    rddSorted = sortCount(rdd)
-    saveAsTextFile("/Users/vilde/BigData/result_2.tsv", rddSorted)
+    rdd = createRDD("./data/geotweets.tsv", 0.1)
+    listSorted = sortCount(rdd)
+    rddSorted = sc.parallelize(listSorted)
+    rddSorted.coalesce(1).saveAsTextFile("./result_2.tsv")
+    #saveAsTextFile("./result_2.tsv", rddSorted)
 
 mainTask2()

@@ -15,6 +15,13 @@ def createRDD(filename, val):
     rdd_sample = rdd.sample(False, val, 5)
     return rdd_sample
 
+# Think this is best
+def countTweets10(rdd):
+    countries10 = rdd.map(lambda x: (x[1], 1)).reduceByKey(lambda x,y: x+y)\
+    .filter(lambda x: int(x[1])>=10)\
+    .map(lambda x: x[0]).collect()
+    return countries10
+
 def countTweets(rdd):
     countries = rdd.map(lambda x: x[1]).countByValue().items()#filter(lambda (value,count): count>= 10))
     countries10 = map(lambda x: x[0],list(filter(lambda (v,c): c >= 10, countries)))
@@ -42,7 +49,7 @@ def saveFile(filename, rdd):
         #    writer.line(country+"\t"+str(latitude)+"\t"+str(longitude))
         #writer.close()
 
-        resultRdd = result.parallelize(result)
+        resultRdd = sc.parallelize(result)
         resultRdd.coalesce(1).saveAsTextFile(filename)
 
 def mainTask3():
