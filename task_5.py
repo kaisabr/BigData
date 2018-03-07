@@ -1,7 +1,7 @@
 from pyspark import SparkContext, SparkConf
 import tsv
 
-
+#Initializes SparkContext and SparkConf
 rdd = None
 rdd_sample = None
 
@@ -17,22 +17,19 @@ def createRDD(filename, val):
 
 # Filters out all tweets not with country_code US and not place_type city
 # Counts number of tweets and sorts first by count, then by country in alphabetical order.
-def filterCityUS(rdd):
+# Creates rdd with city name <tab> count.
+def countCityUS(rdd):
     rddFiltered = rdd.filter(lambda x: x[2]=='US' and x[3] =='city').map(lambda y: y[4])
     rddCount = rddFiltered.countByValue().items()
-    rddSorted = sorted(rddCount, key = lambda x: (x[1]*(-1), x[0]))
+    listSorted = sorted(rddCount, key = lambda x: (x[1]*(-1), x[0]))
+    rddSorted = sc.parallelize(listSorted).map(lambda (x,y): str(x) + "\t" + str(y))
     return rddSorted
 
-# Saves output as tsv file
-def saveAsTextFile(filename, rdd):
-        writer = tsv.TsvWriter(open(filename, "w"))
-        for country, count in rdd:
-            writer.line(country + "\t" + str(count))
-        writer.close()
 
-def mainTask5():
-    rdd = createRDD("/Users/vilde/BigData/data/geotweets.tsv", 0.1)
-    rddSorted = filterCityUS(rdd)
-    saveAsTextFile("/Users/vilde/BigData/result_5.tsv", rddSorted)
+def main():
+    rdd = createRDD("./data/geotweets.tsv", 0.1)
+    rddSorted = countCityUS(rdd)
+    rddSorted.coalesce(1).saveAsTextFile("./result_5.tsv")
 
-mainTask5()
+
+main()
