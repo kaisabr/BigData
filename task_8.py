@@ -1,14 +1,11 @@
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SparkSession
-import tsv
+
 
 
 rdd = None
 rdd_sample = None
 conf = SparkConf()
-#conf.setMaster("local")
-#conf.setAppName("My application")
-#conf.set("spark.executor.memory", "1g")
 sc = SparkContext(conf = conf)
 
 #Create SparkSession:
@@ -53,7 +50,7 @@ def a_count(df):
 
 #task 8b: Number of distinct users (username):
 def b_distinctUsers(df):
-    distUsers = df.select("username").distinct().count()
+    distUsers = df.select("user_screen_name").distinct().count()
     return distUsers
 
 #task 8c: Number of distinct countries:
@@ -68,51 +65,46 @@ def d_distinctPlaces(df):
 
 #task 8e: Number of distinct languages tweets are posted in:
 def e_distinctLanguages(df):
-    distLanguages = df.select("languages").distinct().count()
+    distLanguages = df.select("language").distinct().count()
     return distLanguages
 
 #task 8f: Minimum value of latitude:
 def f_minLatitude(df):
-    df.latitude = df.latitude.astype(float)
-    minLat = df.latitude.min()
-    return minLat
+    df_num = df.select(df.latitude.cast("float"))
+    minLat = df_num.groupBy().min('latitude').collect()[0]
+    return minLat["min(latitude)"]
 
 #task 8f: Minimum value of longtitude:
 def f_minLongitude(df):
-    minLong = df.select("longitude").min()
-    return minLong
+    df_num = df.select(df.longitude.cast("float"))
+    minLong = df_num.groupBy().min('longitude').collect()[0]
+    return minLong["min(longitude)"]
 
 #task 8g: Maximum value of latitude:
 def g_maxLatitude(df):
-    #df['MyColumnName'] = df['MyColumnName'].astype('float64')
-    maxLatRow = df.agg({"latitude": "max"}).collect()[0]
-    maxLat = maxLatRow["max(latitude)"]
-    #maxLat = df.select("latitude").rdd.max()
-    return maxLat
+    df_num = df.select(df.latitude.cast("float"))
+    maxLat = df_num.groupBy().max('latitude').collect()[0]
+    return maxLat["max(latitude)"]
 
 #task 8g: Maxmumim value of longitude:
-#  def g_maxLongitude(df):
-    # df.registerTempTable("df_table")
-# df.groupby().max("longitude").collect()[0].asDict()['max(longitude)']    #maxLong = df.select(max("longitude"))
-    #pyspark.sql.utils.AnalysisException: u'"longitude" is not a numeric column. Aggregation function can only be applied on a numeric column.
-    #return maxLong
+def g_maxLongitude(df):
+    df_num = df.select(df.longitude.cast("float"))
+    maxLong = df_num.groupBy().max('longitude').collect()[0]
+    return maxLong["max(longitude)"]
 
-
+#main function, runs program
 def mainTask4():
     rdd = createRDD("/Users/kaisarokne/git/BigData/geotweets.tsv", 0.1)
     df = createDF(rdd)
-    df.show(2)
-    print('HALLOOOOOOO ', f_minLatitude(df))
-    #print("HEEEEI, ", g_maxLongitude(df))
-    #a_count(df)
-    #b_distinctUsers(df)
-    #g_maxLatitude(df)
-    ("number of tweets: ", a_count(df))
-    #print("distinct number of users: ", b_distinctUsers(df))
-    #print(c_distinctCountries(df))
-    #print(d_distinctPlaces(df))
-    #c_distinctCountries(df)
-    #saveAsTextFile("/Users/kaisarokne/git/BigData/result_4.tsv", rdd, df)
 
+    print("Tweet count: ", a_count(df), \
+          "Distinct users: ", b_distinctUsers(df), \
+          "Distinct countries: ", c_distinctCountries(df), \
+          "Distinct places: ",d_distinctPlaces(df), \
+          "Distinct languages: ", e_distinctLanguages(df), \
+          "Minimum longitude: ", f_minLongitude(df), \
+          "Maximum longitude: ", g_maxLongitude(df), \
+          "Minimum latitude: ", f_minLatitude(df), \
+          "Maximum latitude:", g_maxLatitude(df))
 
 mainTask4()
