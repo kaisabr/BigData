@@ -22,17 +22,10 @@ def sortCount(rdd):
     rddSorted = sorted(rddCount, key = lambda x: (x[1]*(-1), x[0]))
     return rddSorted
 
-# Function that saves to tsv file
-def saveAsTextFile(filename, rdd):
-    writer = tsv.TsvWriter(open(filename, "w"))
-    for country, count in rdd:
-        writer.line(country + "\t" + str(count))
-    writer.close()
-
 def mainTask2():
     rdd = createRDD("./data/geotweets.tsv", 0.1)
     listSorted = sortCount(rdd)
-    rddSorted = sc.parallelize(listSorted)
+    rddSorted = sc.parallelize(listSorted).map(lambda (x,y): str(x) + "\t" + str(y))
     rddSorted.coalesce(1).saveAsTextFile("./result_2.tsv")
     #saveAsTextFile("./result_2.tsv", rddSorted)
 
