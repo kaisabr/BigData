@@ -87,11 +87,12 @@ def g_maxLatitude(df):
 def mainTask4():
     rdd = createRDD("/Users/kaisarokne/git/BigData/geotweets.tsv", 0.1)
     df = createDF(rdd)
-    print("HEEEEI, ", g_maxLongitude(df))
+    print df
+    #print("HEEEEI, ", g_maxLongitude(df))
     #a_count(df)
     #b_distinctUsers(df)
     #g_maxLatitude(df)
-    #print("number of tweets: ", a_count(df))
+    ("number of tweets: ", a_count(df))
     #print("distinct number of users: ", b_distinctUsers(df))
     #print(c_distinctCountries(df))
     #print(d_distinctPlaces(df))
