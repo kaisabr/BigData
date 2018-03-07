@@ -48,7 +48,7 @@ def createDF(rdd):
 def a_count(df):
     return df.count()
 
-#task 8b: Number of distinct users (username):
+#task 8b: Number of distinct users (by selecting on user_screen_name):
 def b_distinctUsers(df):
     distUsers = df.select("user_screen_name").distinct().count()
     return distUsers
