@@ -1,8 +1,6 @@
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SparkSession
 
-
-
 rdd = None
 rdd_sample = None
 conf = SparkConf()
@@ -93,7 +91,7 @@ def g_maxLongitude(df):
     return maxLong["max(longitude)"]
 
 #main function, runs program
-def mainTask4():
+def mainTask8():
     rdd = createRDD("/Users/kaisarokne/git/BigData/geotweets.tsv", 0.1)
     df = createDF(rdd)
 
@@ -107,4 +105,4 @@ def mainTask4():
           "Minimum latitude: ", f_minLatitude(df), \
           "Maximum latitude:", g_maxLatitude(df))
 
-mainTask4()
+mainTask8()
