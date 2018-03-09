@@ -24,6 +24,9 @@ def findLocalTime(rdd):
     #a list of sorted timestamp objects per country:
     localTimeInSeconds = sorted(rdd.map(lambda x: (x[1], (dt.fromtimestamp((float(x[0]) / 1000) + float(x[8]))))).collect())
     print localTimeInSeconds[0]
+
+    #create dictionary dict = {(countryName, hour): tweetCount}
+
     #create a list of only hours, not the entire timestamp object
     '''hourIntervals = []
     for x in range(0,len(localTimeInSeconds)-1):
