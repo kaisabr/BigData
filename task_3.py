@@ -11,7 +11,7 @@ sc = SparkContext(conf = conf)
 # Initializes RDD - splits on tab.
 # Val is the percentage to read from file. Default to 0.1.
 def createRDD(filename, val):
-    rdd = sc.textFile(filename).map(lambda line: line.split('\t'))
+    rdd = sc.textFile(filename, use_unicode=True).map(lambda line: line.split('\t'))
     rdd_sample = rdd.sample(False, val, 5)
     return rdd_sample
 
@@ -43,7 +43,7 @@ def calculateCentroid(rdd):
 
 
 def main():
-    rdd = createRDD("./data/geotweets.tsv", 0.1)
+    rdd = createRDD("./data/geotweets.tsv", 1)
     countries = countTweetsCountry(rdd)
     rddFiltered = filterRDD(rdd, countries)
     rddWrite = calculateCentroid(rddFiltered)
