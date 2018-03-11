@@ -25,10 +25,16 @@ def findLocalTime(rdd):
     from collections import Counter
     localTimeInSeconds = rdd.map(lambda x: (x[1], dt.fromtimestamp((float(x[0]) / 1000) + int(x[8]))))
     lts = sorted(localTimeInSeconds.map(lambda x:(x[0], x[1].hour)).collect())
-    localTimeInHours = localTimeInSeconds.map(lambda x:( x[0], x[1].hour)).reduceByKey(lambda x,y: x+y).collect()
-    print lts
-    print(localTimeInHours)
+    localTimeInHours =localTimeInSeconds.map(lambda x:( x[0], x[1].hour))
+    test1 = localTimeInSeconds.map(lambda x: (x[0], x[1].hour)).groupByKey().mapValues(lambda x: Counter(x)).collect()
 
+    test = localTimeInHours.groupByKey().mapValues(lambda x: Counter(x)).collect()
+
+    #hoursTest = localTimeInHours.map(lambda x: x[1]).map(Counter).reduceByKey(lambda x,y: x+y)
+    #ht = hoursTest.collect()
+        #reduceByKey(lambda x: ()).collect()
+    print lts
+    print test1
     #create dictionary dict = {(countryName, hour): tweetCount}
 
     '''
