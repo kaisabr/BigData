@@ -11,7 +11,7 @@ sc = SparkContext(conf = conf)
 # Initializes RDD - splits on tab.
 # Val is the percentage to read from file. Default to 0.1.
 def createRDD(filename, val):
-    rdd = sc.textFile(filename).map(lambda line: line.split('\t'))
+    rdd = sc.textFile(filename, use_unicode=True).map(lambda line: line.split('\t'))
     rdd_sample = rdd.sample(False, val, 5)
     return rdd_sample
 
@@ -25,12 +25,12 @@ def sortCount(rdd):
 #Sorting the list and creating RDD before writing to file formated as tsv
 def run(rdd):
     listSorted = sortCount(rdd)
-    rddSorted = sc.parallelize(listSorted).map(lambda (x,y): str(x) + "\t" + str(y))
+    rddSorted = sc.parallelize(listSorted).map(lambda (x,y): x + "\t" + str(y))
     return rddSorted
 
 #Creates rdd before writing to file
 def main():
-    rdd = run(createRDD("./data/geotweets.tsv", 0.1))
+    rdd = run(createRDD("./data/geotweets.tsv", 1))
     rdd.coalesce(1).saveAsTextFile("./result_2.tsv")
 
 main()
