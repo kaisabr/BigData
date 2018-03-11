@@ -21,33 +21,22 @@ def createRDD(filename, val):
 
 
 def findLocalTime(rdd):
-    #a list of sorted timestamp objects per country:
     from collections import Counter
+    # a list of timestamp objects per country:
     localTimeInSeconds = rdd.map(lambda x: (x[1], dt.fromtimestamp((float(x[0]) / 1000) + int(x[8]))))
-    lts = sorted(localTimeInSeconds.map(lambda x:(x[0], x[1].hour)).collect())
-    localTimeInHours =localTimeInSeconds.map(lambda x:( x[0], x[1].hour))
-    test1 = localTimeInSeconds.map(lambda x: (x[0], x[1].hour)).groupByKey().mapValues(lambda x: Counter(x)).collect()
+    #Array consisting of country name and a Counter dictionary of hour intervals and their frequency: [(country name, Counter({hour: frequency, ...})),...]
+    intervals = localTimeInSeconds.map(lambda x: (x[0], x[1].hour)).groupByKey().mapValues(lambda x: Counter(x)).collect()
 
-    test = localTimeInHours.groupByKey().mapValues(lambda x: Counter(x)).collect()
-
-    #hoursTest = localTimeInHours.map(lambda x: x[1]).map(Counter).reduceByKey(lambda x,y: x+y)
-    #ht = hoursTest.collect()
-        #reduceByKey(lambda x: ()).collect()
-    print lts
-    print test1
-    #create dictionary dict = {(countryName, hour): tweetCount}
-
-    '''
-    #creates a dictionary of the hour intervals:
-    hourDict = (Counter(localTimeInHours[0]))
-    print hourDict
-    #finds the key in hourDict with the maximum value:
-    maxValue = hourDict.most_common(1) # gives (key:value)
-    print maxValue
-    return maxValue'''
+    output = ""
+    for x in range(0,len(intervals)):
+        #find the most frequent hour in the Counter-dictionary:
+        mostFrequentHours = intervals[x][1].most_common(1)
+        output += str(intervals[x][0]) + "\t" + str(mostFrequentHours[0][0]) + "\t" + str(mostFrequentHours[0][1]) + "\n"
+        #output = country name <tab> most frequent hour <tab> number of tweets
+    return output
 
 def mainTask4():
-    rdd = createRDD("/Users/kaisarokne/git/BigData/geotweets.tsv", 0.00001)
+    rdd = createRDD("/Users/kaisarokne/git/BigData/geotweets.tsv", 0.0001)
     print findLocalTime(rdd)
     #saveAsTextFile("/Users/kaisarokne/git/BigData/result_4.tsv", rdd, df)
 
