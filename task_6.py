@@ -21,13 +21,8 @@ def frequentWords(rdd):
     return rddMapped
 
 
-def saveAsTextFile(filename, rdd):
-        writer = tsv.TsvWriter(open(filename, "w"))
-        writer.close()
-
 def mainTask6():
-    rdd = createRDD("/Users/vilde/BigData/data/geotweets.tsv", 0.1)
+    rdd = createRDD("./data/geotweets.tsv", 0.1)
     freqWords = frequentWords(rdd)
-    #saveAsTextFile("/Users/vilde/BigData/result_6.tsv", rdd)
 
 mainTask6()
