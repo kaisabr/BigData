@@ -84,6 +84,7 @@ def run(filename, rdd):
     averageTweet = j_averageTweetLengthChar(rdd)
     averageWords = k_averageTweetLengthWords(rdd)
 
+    #Create a rdd before writing to file
     results = sc.parallelize([countTweets, countUsername, countCountries, countPlaces\
     ,countLanguages, minLatitude, minLongitude, maxLatitude, maxLongitude\
     ,averageTweet, averageWords])
@@ -92,7 +93,7 @@ def run(filename, rdd):
 
 
 def main():
-    rdd = createRDD("./data/geotweets.tsv", 0.1)
+    rdd = createRDD("./data/geotweets.tsv", 1)
     run("./result_1.tsv", rdd)
 
 main()
