@@ -22,24 +22,28 @@ def createRDD(filename, val):
 
 def findLocalTime(rdd):
     #a list of sorted timestamp objects per country:
-    localTimeInSeconds = sorted(rdd.map(lambda x: (x[1], (dt.fromtimestamp((float(x[0]) / 1000) + float(x[8]))))).collect())
-    print localTimeInSeconds[0]
+    localTimeInSeconds = sorted(rdd.map(lambda x: (x[1], dt.fromtimestamp((float(x[0]) / 1000) + float(x[8])))).collect())
+    for x in range (0,3):
+        print localTimeInSeconds[x][1].hour
 
     #create dictionary dict = {(countryName, hour): tweetCount}
 
     #create a list of only hours, not the entire timestamp object
-    '''hourIntervals = []
-    for x in range(0,len(localTimeInSeconds)-1):
+    hourIntervals = []
+    '''for x in range(0,5):
         #is there a smarter way to convert from list of
         # timestamp object to only hours than a for loop?
         hourIntervals.append(localTimeInSeconds[x].hour)
+    print hourIntervals'''
 
     from collections import Counter
     #creates a dictionary of the hour intervals:
     hourDict = (Counter(hourIntervals))
+    print hourDict
     #finds the key in hourDict with the maximum value:
     maxValue = hourDict.most_common(1) # gives (key:value)
-    return maxValue'''
+    print maxValue
+    return maxValue
 
 def mainTask4():
     rdd = createRDD("/Users/kaisarokne/git/BigData/geotweets.tsv", 0.0001)
