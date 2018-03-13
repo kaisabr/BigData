@@ -92,7 +92,7 @@ def g_maxLongitude(df):
 
 #main function, runs program
 def mainTask8():
-    rdd = createRDD("/Users/kaisarokne/git/BigData/geotweets.tsv", 0.1)
+    rdd = createRDD("/Users/kaisarokne/git/BigData/geotweets.tsv", 1)
     df = createDF(rdd)
 
     print("Tweet count: ", a_count(df), \
