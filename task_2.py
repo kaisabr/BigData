@@ -1,5 +1,5 @@
 from pyspark import SparkContext, SparkConf
-import tsv
+
 
 #Initializes SparkContext and SparkConf
 rdd = None
