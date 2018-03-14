@@ -25,8 +25,8 @@ def findMostFrequentHour(rdd):
     #mostFrequent = country name <tab> most frequent hour <tab> number of tweets
     return mostFrequent
 
-def mainTask4():
+def main():
     rdd = createRDD("./geotweets.tsv", 1)
     mostFrequentHour = findMostFrequentHour(rdd)
     mostFrequentHour.coalesce(1).saveAsTextFile("./result_4.tsv")
-mainTask4()
+main()

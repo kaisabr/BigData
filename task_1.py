@@ -1,9 +1,5 @@
 from pyspark import SparkContext, SparkConf
 
-#conf.setMaster("local")
-#conf.setAppName("My application")
-#conf.set("spark.executor.memory", "1g")
-
 rdd = None
 rdd_sample = None
 

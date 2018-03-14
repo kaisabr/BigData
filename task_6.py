@@ -41,7 +41,7 @@ def frequentWords(rdd, stopWords):
 #Creates RDD and reads stopwords list from file
 #Counts words as done in frequentWords()
 #Finds 10 most frequent words and writes to file.
-def mainTask6():
+def main():
     rdd = createRDD("./data/geotweets.tsv", 1)
     stopWords = stopWordsList("./data/stop_words.txt")
     rddWords = mapUSTweets(rdd)
@@ -50,4 +50,4 @@ def mainTask6():
     results.coalesce(1).saveAsTextFile("./result_6.tsv")
 
 
-mainTask6()
+main()
