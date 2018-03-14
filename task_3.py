@@ -22,7 +22,7 @@ def createRDD(filename, val):
 #Maps so that we're left with countries - return a list of countries
 def countTweetsCountry(rdd):
     countries = rdd.map(lambda x: (x[1], 1)).reduceByKey(lambda x,y: x+y)\
-    .filter(lambda x: int(x[1])>=10)\
+    .filter(lambda x: int(x[1])>10)\
     .map(lambda x: x[0]).collect()
     return countries
 
